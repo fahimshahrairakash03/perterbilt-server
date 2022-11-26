@@ -45,6 +45,7 @@ async function run() {
       res.send(result);
     });
 
+    //Api for Admin Hook
     app.get("/users/admin/:email", async (req, res) => {
       const email = req.params.email;
       const query = { userEmail: email };
@@ -52,12 +53,22 @@ async function run() {
       res.send({ isAdmin: user?.role === "admin" });
     });
 
+    //API for seller hook
+    app.get("/users/seller/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { userEmail: email };
+      const user = await userCollection.findOne(query);
+      res.send({ isSeller: user?.userRole === "seller" });
+    });
+
+    //API for grtting all users
     app.get("/users", async (req, res) => {
       const query = {};
       const result = await userCollection.find(query).toArray();
       res.send(result);
     });
 
+    //API for making admin
     app.put("/users/admin/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
@@ -78,6 +89,7 @@ async function run() {
       }
     });
 
+    //API for deleting seller and buyer
     app.delete("/users/selected/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
@@ -85,11 +97,14 @@ async function run() {
       res.send(result);
     });
 
+    //API for grtting all seller
     app.get("/users/sellers", async (req, res) => {
       const query = { userRole: "seller" };
       const result = await userCollection.find(query).toArray();
       res.send(result);
     });
+
+    //API for grtting all buyer
     app.get("/users/buyers", async (req, res) => {
       const query = { userRole: "buyer" };
       const result = await userCollection.find(query).toArray();
@@ -97,12 +112,15 @@ async function run() {
     });
 
     //booking Api
+
+    //API for posting booking
     app.post("/bookings", async (req, res) => {
       const booking = req.body;
       const result = await bookingCollection.insertOne(booking);
       res.send(result);
     });
 
+    //API for getting bookings
     app.get("/bookings", async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
