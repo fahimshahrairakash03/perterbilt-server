@@ -19,10 +19,20 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const categoryCollection = client.db("peterbilt").collection("categories");
+    const productCollection = client.db("peterbilt").collection("products");
 
+    //category finidin API
     app.get("/categories", async (req, res) => {
       const query = {};
       const result = await categoryCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    //products loading API
+    app.get("/category/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { id: id };
+      const result = await productCollection.find(query).toArray();
       res.send(result);
     });
   } finally {
