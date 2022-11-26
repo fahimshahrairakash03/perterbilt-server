@@ -45,6 +45,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/users/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { userEmail: email };
+      const user = await userCollection.findOne(query);
+      res.send({ isAdmin: user?.role === "admin" });
+    });
+
     app.get("/users", async (req, res) => {
       const query = {};
       const result = await userCollection.find(query).toArray();
@@ -54,18 +61,21 @@ async function run() {
     app.put("/users/admin/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
-      const options = { upsert: true };
-      const updatedDoc = {
-        $set: {
-          role: "admin",
-        },
-      };
-      const result = await userCollection.updateOne(
-        filter,
-        updatedDoc,
-        options
-      );
-      res.send(result);
+      const user = await userCollection.findOne(filter);
+      if (user.role === "admin") {
+        const options = { upsert: true };
+        const updatedDoc = {
+          $set: {
+            role: "admin",
+          },
+        };
+        const result = await userCollection.updateOne(
+          filter,
+          updatedDoc,
+          options
+        );
+        console.log(user);
+      }
     });
 
     //booking Api
