@@ -20,6 +20,7 @@ async function run() {
   try {
     const categoryCollection = client.db("peterbilt").collection("categories");
     const productCollection = client.db("peterbilt").collection("products");
+    const bookingCollection = client.db("peterbilt").collection("bookings");
 
     //category finidin API
     app.get("/categories", async (req, res) => {
@@ -33,6 +34,13 @@ async function run() {
       const id = req.params.id;
       const query = { id: id };
       const result = await productCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    //booking Api
+    app.post("/bookings", async (req, res) => {
+      const booking = req.body;
+      const result = await bookingCollection.insertOne(booking);
       res.send(result);
     });
   } finally {
