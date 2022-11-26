@@ -21,6 +21,7 @@ async function run() {
     const categoryCollection = client.db("peterbilt").collection("categories");
     const productCollection = client.db("peterbilt").collection("products");
     const bookingCollection = client.db("peterbilt").collection("bookings");
+    const userCollection = client.db("peterbilt").collection("users");
 
     //category finidin API
     app.get("/categories", async (req, res) => {
@@ -34,6 +35,13 @@ async function run() {
       const id = req.params.id;
       const query = { id: id };
       const result = await productCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    //user Api
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      const result = await userCollection.insertOne(user);
       res.send(result);
     });
 
