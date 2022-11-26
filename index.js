@@ -62,7 +62,7 @@ async function run() {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
       const user = await userCollection.findOne(filter);
-      if (user.role === "admin") {
+      if (user.role !== "admin") {
         const options = { upsert: true };
         const updatedDoc = {
           $set: {
@@ -74,8 +74,26 @@ async function run() {
           updatedDoc,
           options
         );
-        console.log(user);
+        res.send(result);
       }
+    });
+
+    app.delete("/users/selected/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const result = await userCollection.deleteOne(filter);
+      res.send(result);
+    });
+
+    app.get("/users/sellers", async (req, res) => {
+      const query = { userRole: "seller" };
+      const result = await userCollection.find(query).toArray();
+      res.send(result);
+    });
+    app.get("/users/buyers", async (req, res) => {
+      const query = { userRole: "buyer" };
+      const result = await userCollection.find(query).toArray();
+      res.send(result);
     });
 
     //booking Api
