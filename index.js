@@ -77,6 +77,13 @@ async function run() {
       res.send(result);
     });
 
+    //API for getting reported product
+    app.get("/product/reported", async (req, res) => {
+      const query = {};
+      const result = await reportCollection.find(query).toArray();
+      res.send(result);
+    });
+
     //API for posting the advertised product
     app.post("/advertise", async (req, res) => {
       const advertise = req.body;
