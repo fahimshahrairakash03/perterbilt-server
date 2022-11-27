@@ -23,6 +23,7 @@ async function run() {
     const bookingCollection = client.db("peterbilt").collection("bookings");
     const userCollection = client.db("peterbilt").collection("users");
     const advertiseCollection = client.db("peterbilt").collection("advertise");
+    const reportCollection = client.db("peterbilt").collection("reports");
 
     //category finidin API
     app.get("/categories", async (req, res) => {
@@ -46,6 +47,14 @@ async function run() {
       res.send(result);
     });
 
+    //API for deleting product
+    app.delete("/product/selected/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const result = await productCollection.deleteOne(filter);
+      res.send(result);
+    });
+
     //API for getting product for seller
     app.get("/products", async (req, res) => {
       const email = req.query.email;
@@ -58,6 +67,13 @@ async function run() {
     app.get("/advertise", async (req, res) => {
       const query = {};
       const result = await advertiseCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    //API for reporting product
+    app.post("/product/reported", async (req, res) => {
+      const product = req.body;
+      const result = await reportCollection.insertOne(product);
       res.send(result);
     });
 
