@@ -33,8 +33,15 @@ async function run() {
     //products loading API
     app.get("/category/:id", async (req, res) => {
       const id = req.params.id;
-      const query = { id: id };
+      const query = { categoryId: id };
       const result = await productCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    //API for creating product
+    app.post("/product", async (req, res) => {
+      const product = req.body;
+      const result = await productCollection.insertOne(product);
       res.send(result);
     });
 
