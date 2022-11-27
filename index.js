@@ -54,6 +54,13 @@ async function run() {
       res.send(result);
     });
 
+    //API for getting the advertised products
+    app.get("/advertise", async (req, res) => {
+      const query = {};
+      const result = await advertiseCollection.find(query).toArray();
+      res.send(result);
+    });
+
     //API for posting the advertised product
     app.post("/advertise", async (req, res) => {
       const advertise = req.body;
