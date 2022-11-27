@@ -47,6 +47,26 @@ async function run() {
       res.send(result);
     });
 
+    //API for updating product
+    app.put("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const product = await productCollection.findOne(filter);
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          availability: "sold",
+        },
+      };
+      const result = await productCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+
+      res.send(result);
+    });
+
     //API for deleting product
     app.delete("/product/selected/:id", async (req, res) => {
       const id = req.params.id;
@@ -65,7 +85,7 @@ async function run() {
 
     //API for getting the advertised products
     app.get("/advertise", async (req, res) => {
-      const query = {};
+      const query = { availability: "available" };
       const result = await advertiseCollection.find(query).toArray();
       res.send(result);
     });
